@@ -1,9 +1,7 @@
-
-<title>All you need is C</title>
-<atom:link href="nil" rel="self" type="application/rss+xml" />
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel>
+<title>nil</title>
 <link>nil</link>
-<description><![CDATA[nil]]></description>
-<item>
+<description><![CDATA[nil]]></description><item>
 <title>All you need is C</title>
 <link>TODO: Link</link>
 <author>TODO: Author</author>
@@ -19,62 +17,6 @@
 </item>
 <item>
 <title>Why I like emacs</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>All you need is C</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>How I created tiny-rss</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>Why I like emacs</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>All you need is C</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>How I created tiny-rss</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>Why I like emacs</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>All you need is C</title>
-<link>TODO: Link</link>
-<author>TODO: Author</author>
-<pubDate>22-03-2025</pubDate>
-<description><![CDATA[nil]]></description>
-</item>
-<item>
-<title>How I created tiny-rss</title>
 <link>TODO: Link</link>
 <author>TODO: Author</author>
 <pubDate>22-03-2025</pubDate>

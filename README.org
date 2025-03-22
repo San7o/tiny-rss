@@ -40,23 +40,36 @@ is not the usual blog, It resembles mroe a wiki, with many files
 spreaded across multiple directories. Some of those file are
 considered "blog posts", while some others are considered as
 glue to those posts, to give a more general context and for
-effective indexing. For those reasons, I needed a really flexible
-RSS feed generator that would generate feeds only for the files
-I wanted, which may be anywhere in the directory tree. Furthermore,
-I may want to send the feed for only a particular section within
-the same file (because there is a lot of framing around the actual
-"posts"). Just to be clear, with "post" I mean a decently long text
-section about some topic that I want to share (therefore, I want a
-feed to be generated).
+effective indexing.
+
+For those reasons, I needed a really flexible RSS feed generator
+that would generate feeds only for the files I wanted, which may
+be anywhere in the directory tree. Furthermore, I may want to send
+the feed for only a particular section within the same file
+(because there is a lot of framing around the actual "posts").
+Just to be clear, with "post" I mean a decently long text section
+about some topic that I want to share (therefore, I want a feed to
+be generated).
+
 Existing solutions like https://github.com/emacsmirror/ox-rss do not
 provide the flexibility that I wanted, at least not with some
 thinkering. It would take less time to write my own than to
-thinker with those packages, or so I thought. So here we are,
-this was my first ever mini-coding project in emacs lisp, it took
-me one day of coding and I will put additional hours in the following
-days to finish the last details and document everything. The
-simplicity of the program is simply amazing.
+thinker with those packages, or so I thought.
 
-Everythin is GPL-3.0. Note that the name has nothing to do with
-Tiny Tiny RSS, which is a web-based rss client, I did't know
-about this before starting project.
+So here we are, this was my first ever mini-coding project in
+emacs lisp, it took me one day of coding and I will put additional
+hours in the following days to finish the last details and document
+everything. The simplicity of the program is simply amazing.
+
+** Status
+
+The project needs some little adjustments, for example previous
+generated RSS files need to be deleted before running this
+script or the items will be appended to the old ones, the links
+are not calculated yet and some xml tags need to be appended at
+the end of the rss file. When I will have an hour to spare, I will
+fix those tiny problems.
+
+Everything is GPL-3.0. Note that the name has nothing to do with
+Tiny Tiny RSS, which is a web-based rss client. I did't know
+about this before starting my project.
