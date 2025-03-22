@@ -36,8 +36,8 @@ html.
 
 I was looking for an RSS feed generator for my org-generated
 online diary https://giovanni-diary.netlify.app/. This website
-is not the usual blog, It resembles mroe a wiki, with many files
-spreaded across multiple directories. Some of those file are
+is not the usual blog, It resembles more a wiki, with many files
+spreaded across multiple directories. Some of those files are
 considered "blog posts", while some others are considered as
 glue to those posts, to give a more general context and for
 effective indexing.
