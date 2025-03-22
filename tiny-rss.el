@@ -56,7 +56,7 @@
 						 (file (concat output-directory "/feed" category ".rss")))
 				(if (not (file-exists-p file))
 						(tiny-rss-create-rss-file file title link description))
-				(tiny-tss-add-feed-to-file title-item date category content link file)))))
+				(tiny-rss-add-feed-to-file title-item date category content link file)))))
 ;; TODO: add end closing to channel and rss tags
 ;; TODO: properly append items to the file without regenerating everything
 
@@ -75,7 +75,7 @@
 						 title link link description)
 		 nil file)))
 
-(defun tiny-tss-add-feed-to-file (title date category content link file)
+(defun tiny-rss-add-feed-to-file (title date category content link file)
 	(print (concat "Adding feed to file" file))
 	(append-to-file
 	 (format (concat
