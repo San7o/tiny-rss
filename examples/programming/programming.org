@@ -1,0 +1,15 @@
+#+startup: content indent
+
+* Programming
+
+My thoughts on programming languages
+
+** All you need is C
+:PROPERTIES:
+:TITLE: All you need is C
+:DATE: 22-03-2025
+:CATEGORY: Tech
+:RSS: true
+:END:
+
+C the greatest language ever.

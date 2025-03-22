@@ -1,0 +1,26 @@
+#+startup: content indent
+#+TITLE: Blog
+
+* Blog
+
+** How I created tiny-rss
+:PROPERTIES:
+:TITLE: How I created tiny-rss
+:RSS: true
+:DATE: 22-03-2025
+:CATEGORY: Tech
+:END:
+Here I describe how I created tiny-rss
+*** The Beginning
+In the begninning there was darkness
+** Why I like emacs
+:PROPERTIES:
+:TITLE: Why I like emacs
+
+:DATE: 22-03-2025
+:CATEGORY: Tech
+:END:
+Yes, you heard It right. Emacs is awesome.
+
+
+* Ciao

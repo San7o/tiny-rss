@@ -1,0 +1,62 @@
+#+startup: content indent
+
+* tny-rss
+
+Generate RSS 2.0 feeds from org files for your blog, with support
+for multiple feeds for different categories.
+
+** Getting started
+
+To generate a feed item from an heading, add the properties
+=TITLE=, =RSS=, =DATE= and =CATEGORY= to the heading:
+
+#+begin_src org
+* My blog post!
+  :PROPERTIES:
+  :TITLE: Just a Test
+  :RSS: t
+  :DATE: 22-03-2025
+  :CATEGORY: Tech
+  :END:
+#+end_src
+
+To generate the RSS file[s], call =tiny-rss-generate=:
+
+#+begin_src emacs-lisp
+  (require 'tiny-rss)
+  (tiny-rss-generate
+   :input-directory "/my/org/files"
+   :output-directory "/output/dir/here")
+#+end_src
+
+The rss items will contain all the content under the heading in
+html.
+
+** Motivation
+
+I was looking for an RSS feed generator for my org-generated
+online diary https://giovanni-diary.netlify.app/. This website
+is not the usual blog, It resembles mroe a wiki, with many files
+spreaded across multiple directories. Some of those file are
+considered "blog posts", while some others are considered as
+glue to those posts, to give a more general context and for
+effective indexing. For those reasons, I needed a really flexible
+RSS feed generator that would generate feeds only for the files
+I wanted, which may be anywhere in the directory tree. Furthermore,
+I may want to send the feed for only a particular section within
+the same file (because there is a lot of framing around the actual
+"posts"). Just to be clear, with "post" I mean a decently long text
+section about some topic that I want to share (therefore, I want a
+feed to be generated).
+Existing solutions like https://github.com/emacsmirror/ox-rss do not
+provide the flexibility that I wanted, at least not with some
+thinkering. It would take less time to write my own than to
+thinker with those packages, or so I thought. So here we are,
+this was my first ever mini-coding project in emacs lisp, it took
+me one day of coding and I will put additional hours in the following
+days to finish the last details and document everything. The
+simplicity of the program is simply amazing.
+
+Everythin is GPL-3.0. Note that the name has nothing to do with
+Tiny Tiny RSS, which is a web-based rss client, I did't know
+about this before starting project.
