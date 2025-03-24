@@ -1,6 +1,6 @@
 #+startup: content indent
 
-* tny-rss
+* tiny-rss
 
 Generate RSS 2.0 feeds from org files for your blog, with support
 for multiple feeds for different categories.
