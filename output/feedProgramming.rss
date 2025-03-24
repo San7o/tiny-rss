@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel>
+<title>My RSS</title>
+<link>mywebsite.com</link>
+<description><![CDATA[Read all my RSS feeds]]></description>
+<item>
+<title>All you need is C</title>
+<link>https://en.cppreference.com/w/</link>
+<author>Everyone</author>
+<pubDate>22-03-2025</pubDate>
+<description><![CDATA[<p>
+C the greatest language ever.
+</p>
+]]></description>
+</item>
+</channel></rss>

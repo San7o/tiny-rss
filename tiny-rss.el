@@ -14,7 +14,8 @@
 						(if output-directory
 								(progn
 									(setq output-directory (expand-file-name output-directory))
-									(tiny-rss-output output-directory title link description items-list))
+									(tiny-rss-output output-directory title link description items-list)
+									(print "RSS feed generated"))
 							(error "tiny-rss-generate: No output directory specified"))))
 			(error "tiny-rss-generate: No input directory specified"))))
 
@@ -28,7 +29,7 @@
 (defun tiny-rss-get-items (filename)
 	"Generate a list of RSS items from a file. An RSS item is a list
    of strings with the following structure:
-   (TITLE DATE CATEGORY CONTENT)"
+   (TITLE DATE CATEGORY AUTHOR LINK CONTENT)"
 	(let ((buffer (find-file filename))
 				 (items))
 		(if buffer
@@ -38,27 +39,56 @@
 									(title (org-entry-get (point) "TITLE"))
 									(date (org-entry-get (point) "DATE"))
 									(category (org-entry-get (point) "CATEGORY"))
+									(author (org-entry-get (point) "AUTHOR"))
+									(link (org-entry-get (point) "LINK"))
 									(html-buffer (org-html-export-as-html nil t nil t))
 									(content (with-current-buffer "*Org HTML Export*" (buffer-string)))
-							    (item (list title date category content)))
+							    (item (list title date category author link content)))
 							(setq items (append items (list item))))
 					 "RSS=\"true\"" 'file)
 					items)
 			(error "tiny-rss-get-items: unable to get buffer"))))
 
 (defun tiny-rss-output (output-directory title link description items-list)
+	(tiny-rss-create-rss-files output-directory title link description items-list)
 	(dolist (item-list items-list)
 		(dolist (item item-list)
 			(let* ((title-item (nth 0 item))
 						 (date (nth 1 item))
 						 (category (nth 2 item))
-						 (content (nth 3 item))
-						 (file (concat output-directory "/feed" category ".rss")))
-				(if (not (file-exists-p file))
-						(tiny-rss-create-rss-file file title link description))
-				(tiny-rss-add-feed-to-file title-item date category content link file)))))
-;; TODO: add end closing to channel and rss tags
-;; TODO: properly append items to the file without regenerating everything
+						 (author (nth 3 item))
+						 (link (nth 4 item))
+						 (content (nth 5 item))
+						 (file (tiny-rss-file-name-from-category output-directory category)))
+				(tiny-rss-add-feed-to-file title-item date category author link content file))))
+	(tiny-rss-files-add-closing-tags output-directory items-list))
+
+(defun tiny-rss-file-name-from-category (output-directory category)
+	(concat output-directory "/feed" category ".rss"))
+
+(defun tiny-rss-create-rss-files (output-directory title link description items-list)
+	(dolist (item-list items-list)
+		(dolist (item item-list)
+			(let* ((category (nth 2 item))
+						 (file (tiny-rss-file-name-from-category output-directory category)))
+				(tiny-rss-create-rss-file file title link description)))))
+
+(defun tiny-rss-files-add-closing-tags (output-directory items-list)
+	(dolist (item-list items-list)
+		(dolist (item item-list)
+			(let* ((category (nth 2 item))
+						 (file (tiny-rss-file-name-from-category output-directory category))
+						 (closing-tags "</channel></rss>"))
+				(with-current-buffer (find-file file)
+					(revert-buffer-quick)
+					(if (not (string-match-p (regexp-quote closing-tags) (buffer-string)))
+							(append-to-file closing-tags nil file)))))))
+
+(defun buffer-contains-substring (string)
+  (save-excursion
+    (save-match-data
+      (goto-char (point-min))
+      (search-forward string nil t))))
 
 (defun tiny-rss-create-rss-file (file title link description)
 	(let ((directory (file-name-directory file)))
@@ -72,10 +102,10 @@
 							"\n<title>%s</title>\n"
 							"<link>%s</link>\n"
 							"<description><![CDATA[%s]]></description>\n")
-						 title link link description)
+						 title link description)
 		 nil file)))
 
-(defun tiny-rss-add-feed-to-file (title date category content link file)
+(defun tiny-rss-add-feed-to-file (title date category author link content file)
 	(print (concat "Adding feed to file" file))
 	(append-to-file
 	 (format (concat
@@ -86,7 +116,7 @@
 						"<pubDate>%s</pubDate>\n"
 						"<description><![CDATA[%s]]></description>\n"
 						"</item>\n")
-						title "TODO: Link" "TODO: Author" date description)
+						title link author date content)
 	 nil file))
 
 (provide 'tiny-rss)

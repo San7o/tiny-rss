@@ -7,8 +7,11 @@ for multiple feeds for different categories.
 
 ** Getting started
 
-To generate a feed item from an heading, add the properties
-=TITLE=, =RSS=, =DATE= and =CATEGORY= to the heading:
+To generate a feed item from an heading, you can add the properties
+=TITLE=, =RSS=, =DATE=, =AUTHOR=, =LINK= and =CATEGORY= to the
+heading, like in the below example. Note that only the =RSS=
+property is required to generate the feed item and the properties
+that are not specified will be set to =nil=.
 
 #+begin_src org
 * My blog post!
@@ -17,6 +20,8 @@ To generate a feed item from an heading, add the properties
   :RSS: t
   :DATE: 22-03-2025
   :CATEGORY: Tech
+  :AUTHOR: Rich Stallman
+  :LINK: myblog.com/test.html
   :END:
 #+end_src
 
@@ -26,11 +31,15 @@ To generate the RSS file[s], call =tiny-rss-generate=:
   (require 'tiny-rss)
   (tiny-rss-generate
    :input-directory "/my/org/files"
-   :output-directory "/output/dir/here")
+   :output-directory "/output/dir/here"
+   :title "My RSS"
+   :link "mywebsite.com"
+   :description "Read all my RSS feeds")
 #+end_src
 
-The rss items will contain all the content under the heading in
-html.
+Only =input-directory= and =output-directory= are required. The
+generated RSS items will contain all the content under the heading,
+in html.
 
 ** Motivation
 
@@ -61,14 +70,7 @@ emacs lisp, it took me one day of coding and I will put additional
 hours in the following days to finish the last details and document
 everything. The simplicity of the program is simply amazing.
 
-** Status
-
-The project needs some little adjustments, for example previous
-generated RSS files need to be deleted before running this
-script or the items will be appended to the old ones, the links
-are not calculated yet and some xml tags need to be appended at
-the end of the rss file. When I will have an hour to spare, I will
-fix those tiny problems.
+** License
 
 Everything is GPL-3.0. Note that the name has nothing to do with
 Tiny Tiny RSS, which is a web-based rss client. I did't know

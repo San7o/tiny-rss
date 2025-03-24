@@ -8,8 +8,10 @@ My thoughts on programming languages
 :PROPERTIES:
 :TITLE: All you need is C
 :DATE: 22-03-2025
-:CATEGORY: Tech
+:CATEGORY: Programming
 :RSS: true
+:AUTHOR: Everyone
+:LINK: https://en.cppreference.com/w/
 :END:
 
 C the greatest language ever.

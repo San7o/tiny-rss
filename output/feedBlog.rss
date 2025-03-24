@@ -1,42 +1,55 @@
-#+startup: content indent
-#+TITLE: Blog
-
-* Blog
-
-** How I created tiny-rss
-:PROPERTIES:
-:TITLE: How I created tiny-rss
-:RSS: true
-:DATE: 22-03-2025
-:CATEGORY: Blog
-:AUTHOR: John Snow
-:LINK: https://github.com/San7o/tiny-rss/
-:END:
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel>
+<title>My RSS</title>
+<link>mywebsite.com</link>
+<description><![CDATA[Read all my RSS feeds]]></description>
+<item>
+<title>How I created tiny-rss</title>
+<link>https://github.com/San7o/tiny-rss/</link>
+<author>John Snow</author>
+<pubDate>22-03-2025</pubDate>
+<description><![CDATA[<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org99de6ba">1. The Beginning</a></li>
+</ul>
+</div>
+</div>
+<p>
 Here I describe how I created tiny-rss
-*** The Beginning
-In the begninning there was darkness
-** I'd just like to interject for a moment.
-:PROPERTIES:
-:TITLE: I'd just like to interject for a moment
-:RSS: true
-:DATE: 22-03-2025
-:CATEGORY: Blog
-:AUTHOR: Richard Stallman
-:LINK: https://boards.4chan.org/g/
-:END:
+</p>
+<div id="outline-container-org99de6ba" class="outline-2">
+<h2 id="org99de6ba"><span class="section-number-2">1.</span> The Beginning</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+In the begninning there was darkness</p>
+</div>
+</div>
+]]></description>
+</item>
+<item>
+<title>I'd just like to interject for a moment</title>
+<link>https://boards.4chan.org/g/</link>
+<author>Richard Stallman</author>
+<pubDate>22-03-2025</pubDate>
+<description><![CDATA[<p>
 What you're refering to as Linux, is in fact, GNU/Linux, or as I've
 recently taken to calling it, GNU plus Linux. Linux is not an
 operating system unto itself, but rather another free component of a
 fully functioning GNU system made useful by the GNU corelibs, shell
 utilities and vital system components comprising a full OS as defined
 by POSIX.
+</p>
 
+<p>
 Many computer users run a modified version of the GNU system every
 day, without realizing it. Through a peculiar turn of events, the
 version of GNU which is widely used today is often called Linux, and
 many of its users are not aware that it is basically the GNU system,
 developed by the GNU Project.
+</p>
 
+<p>
 There really is a Linux, and these people are using it, but it is just
 a part of the system they use. Linux is the kernel: the program in the
 system that allocates the machine's resources to the other programs
@@ -46,7 +59,7 @@ complete operating system. Linux is normally used in combination with
 the GNU operating system: the whole system is basically GNU with Linux
 added, or GNU/Linux. All the so-called Linux distributions are really
 distributions of GNU/Linux!
-
-
-* Shhh
-Nothing to see here
+</p>
+]]></description>
+</item>
+</channel></rss>
