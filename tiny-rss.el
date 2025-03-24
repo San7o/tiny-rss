@@ -1,7 +1,82 @@
+;; tiny-rss.el -- Flexible RSS 2.0 generator from org headings
+
+;; Copyright (C) 2013-2021 Free Software Foundation, Inc.
+;; Author: Giovanni Santini <santigio2003@gmail.com>
+;; Maintainer: Giovanni Santini <santigio2003@gmail.com>
+;; Version: 0.0.1
+;; Package-Requires: ((emacs "26.1") (org "9.3"))
+;; Keywords: org, blog, feed, rss
+;; Homepage: https://github.com/San7o/tiny-rss.git
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Guide:
+
+;; To generate a feed item from an heading, you can add the properties
+;; =TITLE=, =RSS=, =DATE=, =AUTHOR=, =LINK= and =CATEGORY= to the
+;; heading, like in the below example. Note that only the =RSS=
+;; property is required to generate the feed item and the properties
+;; that are not specified will be set to =nil=.
+;;
+;;  #+begin_src org
+;;  * My blog post!
+;;   :PROPERTIES:
+;;   :TITLE: Just a Test
+;;   :RSS: t
+;;   :DATE: 22-03-2025
+;;   :CATEGORY: Tech
+;;   :AUTHOR: Richard Stallman
+;;   :LINK: myblog.com/test.html
+;;   :END:
+;;   My beautiful blog here...
+;; #+end_src
+;;
+;; To generate the RSS file[s], call =tiny-rss-generate=:
+;;
+;; #+begin_src emacs-lisp
+;;  (require 'tiny-rss)
+;;  (tiny-rss-generate
+;;   :input-directory "/my/org/files"
+;;   :output-directory "/output/dir/here"
+;;   :title "My RSS"
+;;   :link "mywebsite.com"
+;;   :description "Read all my RSS feeds")
+;; #+end_src
+;;
+;; Only =input-directory= and =output-directory= are required. The
+;; generated RSS items will contain all the content under the heading,
+;; in html.
+
+
 (require 'org)
 (require 'ox-html)
 
 (defun tiny-rss-generate (&rest args)
+	"Entrypoint of tiny-rss to generate the RSS feed from org files.
+   The user can specihy the following options:
+   - REQUIRED input-directory string: the path of the directory where the org
+     files are stored. This will be traversed recursively and all the
+     files ending with .org will be checked for headings with the
+     RSS property set to true.
+   - REQUIRED output-directory string: the path of the directory where the
+     .rss files will be generated. If the directory does not exist,
+     Iw ill be created.
+   - OPTIONAL title string: the global title of the feed
+   - OPTIONAL link string: a link to your website
+   - OPTIONAL description string: a description of your website"
 	(let ((input-directory (plist-get args :input-directory))
 				(output-directory (plist-get args :output-directory))
 				(title (plist-get args :title))
@@ -50,6 +125,7 @@
 			(error "tiny-rss-get-items: unable to get buffer"))))
 
 (defun tiny-rss-output (output-directory title link description items-list)
+	"Write the RSS items to .rss files."
 	(tiny-rss-create-rss-files output-directory title link description items-list)
 	(dolist (item-list items-list)
 		(dolist (item item-list)
@@ -64,9 +140,12 @@
 	(tiny-rss-files-add-closing-tags output-directory items-list))
 
 (defun tiny-rss-file-name-from-category (output-directory category)
+	"Returns the name of the .rss file for a specific category concatenated
+   with the output directory."
 	(concat output-directory "/feed" category ".rss"))
 
 (defun tiny-rss-create-rss-files (output-directory title link description items-list)
+	"Create the rss files from a list of rss items."
 	(dolist (item-list items-list)
 		(dolist (item item-list)
 			(let* ((category (nth 2 item))
@@ -74,6 +153,8 @@
 				(tiny-rss-create-rss-file file title link description)))))
 
 (defun tiny-rss-files-add-closing-tags (output-directory items-list)
+	"Close xml tags at the end of the .rss files. This is called after
+   all the items have been inserted."
 	(dolist (item-list items-list)
 		(dolist (item item-list)
 			(let* ((category (nth 2 item))
@@ -85,12 +166,14 @@
 							(append-to-file closing-tags nil file)))))))
 
 (defun buffer-contains-substring (string)
+	"Returns t if the current buffer contains a substring."
   (save-excursion
     (save-match-data
       (goto-char (point-min))
       (search-forward string nil t))))
 
 (defun tiny-rss-create-rss-file (file title link description)
+	"Create an .rss file with the specified fields."
 	(let ((directory (file-name-directory file)))
 		(if (not (file-directory-p directory))
 				(make-directory (file-name-directory file)))
@@ -106,6 +189,7 @@
 		 nil file)))
 
 (defun tiny-rss-add-feed-to-file (title date category author link content file)
+	"Append a single item entry in an .rss file with the specified fields."
 	(print (concat "Adding feed to file" file))
 	(append-to-file
 	 (format (concat
@@ -120,3 +204,5 @@
 	 nil file))
 
 (provide 'tiny-rss)
+
+;; tiny-rss.el end
