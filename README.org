@@ -20,9 +20,10 @@ that are not specified will be set to =nil=.
   :RSS: t
   :DATE: 22-03-2025
   :CATEGORY: Tech
-  :AUTHOR: Rich Stallman
+  :AUTHOR: Richard Stallman
   :LINK: myblog.com/test.html
   :END:
+  My beautiful blog here...
 #+end_src
 
 To generate the RSS file[s], call =tiny-rss-generate=:
@@ -69,6 +70,16 @@ So here we are, this was my first ever mini-coding project in
 emacs lisp, it took me one day of coding and I will put additional
 hours in the following days to finish the last details and document
 everything. The simplicity of the program is simply amazing.
+
+** Further work
+
+The RSS generator works well, however It can be improved in many
+ways. Here are some ideas:
+- automatically generate the link property if not specified based
+  on the file path and the output directory path
+- limit the number of feed items in the output. This could also
+  be implemented by setting a timeframe filter, like generating
+  the feed only for the posts of the last month or week.
 
 ** License
 
