@@ -7,7 +7,7 @@ My thoughts on programming languages
 ** All you need is C
 :PROPERTIES:
 :TITLE: All you need is C
-:DATE: 22-03-2025
+:DATE: 2025-03-22
 :CATEGORY: Programming
 :RSS: true
 :AUTHOR: Everyone

@@ -42,6 +42,44 @@ Only =input-directory= and =output-directory= are required. The
 generated RSS items will contain all the content under the heading,
 in html.
 
+** Advanced Usage
+
+*** Filters
+
+You can specify a filter for your feeds. A filter is a function that
+takes an RSS item and returns either t or nil specifying if this RSS
+item should be included in the output or not, respectively. An
+item is a list with the form =(TITLE DATE CATEGORY AUTHOR LINK CONTENT)=.
+
+For example, this is the simples filter you can write, which
+accepts everything:
+#+begin_src emacs-lisp
+(defun tiny-rss-filter-accept (item)
+  t)
+#+end_src
+
+To register the filter, pass the the =:filter= argument to the
+function =tiny-rss-generate= like so:
+#+begin_src emacs-lisp
+  (tiny-rss-generate
+   :input-directory "~/projects/tiny-rss/examples"
+   :output-directory "~/projects/tiny-rss/output"
+   :filter 'tiny-rss-filter-accept)
+#+end_src
+
+If you don't specify a filter, this is the default one. Another
+filter already provided accepts only the posts written after
+a certain date:
+#+begin_src emacs-lisp
+  (defun tiny-rss-filter-after-date (item)
+    "Accepts only the dates past the date set in the variable
+   =tiny-rss-filter-after-date=. The date is expected to follow the
+   structure  YYYY-MM-DD."
+    (let ((date (nth 1 item)))
+      (if (string> date tiny-rss-filter-after-date)
+          t nil)))
+#+end_src
+
 ** Motivation
 
 I was looking for an RSS feed generator for my org-generated
@@ -77,9 +115,7 @@ The RSS generator works well, however It can be improved in many
 ways. Here are some ideas:
 - automatically generate the link property if not specified based
   on the file path and the output directory path
-- limit the number of feed items in the output. This could also
-  be implemented by setting a timeframe filter, like generating
-  the feed only for the posts of the last month or week.
+- improve the documentation to get ready for MELPA.
 
 ** License
 
