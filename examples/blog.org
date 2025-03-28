@@ -7,7 +7,7 @@
 :PROPERTIES:
 :RSS: true
 :TITLE: How I created tiny-rss
-:DATE: 22 Feb 2025 14:45:30 PST
+:DATE: 20 Feb 2025 14:45:30 PST
 :CATEGORY: Blog
 :AUTHOR: John Snow
 :LINK: https://github.com/San7o/tiny-rss/

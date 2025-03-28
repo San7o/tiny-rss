@@ -4,7 +4,7 @@
 ;; Author: Giovanni Santini <santigio2003@gmail.com>
 ;; Maintainer: Giovanni Santini <santigio2003@gmail.com>
 ;; Version: 0.0.1
-;; Package-Requires: ((emacs "26.1") (org "9.3") (ox-html))
+;; Package-Requires: ((emacs "26.1") (org "9.3"))
 ;; Keywords: org, blog, feed, rss
 ;; Homepage: https://github.com/San7o/tiny-rss.git
 
@@ -131,10 +131,9 @@
                 (progn
                   (setq output-directory (expand-file-name output-directory))
                   (if enforce-rfc822
-                      (if (not (tiny-rss-rfc822-check items-list))
-                          (error "Date is not compliant with rfc822")))
+                      (tiny-rss-rfc822-check items-list))
                   (tiny-rss-output output-directory categories-info items-list filter)
-                  (print "tiny-rss-generate: RSS feed generated successfully"))
+                  (message "tiny-rss-generate: RSS feed generated successfully"))
               (error "tiny-rss-generate: No output directory specified"))))
       (error "tiny-rss-generate: No input directory specified"))))
 
@@ -169,7 +168,7 @@
               (setq items (append items (list item))))
            "RSS=\"true\"" 'file)
           items)
-      (error "tiny-rss-get-items: unable to get buffer"))))
+      (error "tiny-rss-get-items: unable to get buffer " filename))))
 
 (defun tiny-rss-output (output-directory categories-info items-list filter)
   "Write the RSS items to .rss files."
@@ -211,7 +210,6 @@
              (closing-tags "</channel></rss>"))
         (if (funcall filter item)
             (with-current-buffer (find-file file)
-              (revert-buffer-quick)
               (if (not (string-match-p (regexp-quote closing-tags) (buffer-string)))
                   (append-to-file closing-tags nil file))))))))
         
@@ -249,7 +247,7 @@
 
 (defun tiny-rss-add-feed-to-file (title date category author link content file)
   "Append a single item entry in an .rss file with the specified fields."
-  (print (concat "Adding feed to file" file))
+  (message (concat "tiny-rss: adding feed to file" file))
   (append-to-file
    (format (concat
             "<item>\n"
@@ -267,16 +265,18 @@
 (setq tiny-rss-rfc822-pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
 
 (defun tiny-rss-rfc822-check (items-list)
-  "Check if dates in items are compatible with rfc822. Returns t or nil."
-  (let ((matched t))
-    (dolist (item-list items-list)
-      (dolist (item item-list)
-        (setq matched (and matched (string-match tiny-rss-rfc822-pattern (nth 1 item))))))
-    (if matched t nil)))
+  "Check if dates in items are compatible with rfc822. Throws an error
+   if a date is not compliant."
+  (dolist (item-list items-list)
+    (dolist (item item-list)
+      (let* ((timestamp (nth 1 item))
+             (this (string-match tiny-rss-rfc822-pattern timestamp)))
+        (if (not this)
+            (error "tiny-rss-rfc822-check: " timestamp " is not rfc822"))))))
 
 (defun tiny-rss-rfc822-parse-timestamp (timestamp)
   "Parse a timestamp like 'Wed, 27 Mar 2024 14:30:00 GMT' and return a
-   list of components with the following structure:
+   list with the following structure:
    (DAY-NAME DAY MONTH YEAR HOUR MINUTE SECONDS TIMEZONE)"
   (if (string-match tiny-rss-rfc822-pattern timestamp)
       (list (match-string 1 timestamp)  ;; Optional day of the week
@@ -287,7 +287,7 @@
             (match-string 6 timestamp)  ;; Minute
             (match-string 7 timestamp)  ;; Optional seconds
             (match-string 8 timestamp)) ;; Time zone
-    (error "Error parsing date, does it follow rfc822?")))
+    (error "Error parsing date " timestamp ". does it follow rfc822?")))
 
 (defun tiny-rss-rfc822-month-to-number (month)
   "Convert a three-letter month abbreviation (e.g., 'Sep') to a
