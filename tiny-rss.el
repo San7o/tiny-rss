@@ -299,7 +299,7 @@ clients pointing to a web render of the CONTENT."
 
 ;;; rfc822 related functions:
 
-(setq tiny-rss-rfc822-pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
+(setq tiny-rss-rfc822-pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?:\\(:[0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
 
 (defun tiny-rss-rfc822-check (items-list)
   "Check if dates in items are compatible with rfc822.
@@ -325,7 +325,8 @@ The requrned list has the following structure:
             (match-string 4 timestamp)  ;; Year
             (match-string 5 timestamp)  ;; Hour
             (match-string 6 timestamp)  ;; Minute
-            (match-string 7 timestamp)  ;; Optional seconds
+            (when (match-string 7 timestamp)  ;; Seconds (remove colon)
+              (substring (match-string 7 timestamp) 1))
             (match-string 8 timestamp)) ;; Time zone
     (error "Error parsing date %s. does it follow rfc822?" timestamp)))
 

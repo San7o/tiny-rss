@@ -52,7 +52,7 @@ the header and all the content under that header, converted in html.
 The user can specify metadata information about each category.
 Those information include a =title=, a =link= and a =description=.
 Each =.rss= file will contain those three fileds which are fetched
-by clients, so you you may be interested in setting them.
+by clients, so you may be interested in setting them.
 
 To specify information about certain categories, you can pass a
 list of category information to =tiny-rss-generate= via
