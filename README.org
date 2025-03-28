@@ -88,7 +88,7 @@ a certain date:
 It is easy to imagine how you could use this to filter just the
 posts of the last month, for example.
 
-*** Encorce rfc822
+*** Enforce rfc822
 
 The RSS 2.0 date format follows RFC822's conventions, a full
 date looks like =Sat, 07 Sep 2002 00:00:01 GMT=. This in not
