@@ -73,15 +73,36 @@ a certain date:
 #+begin_src emacs-lisp
   (defun tiny-rss-filter-after-date (item)
     "Accepts only the dates past the date set in the variable
-   =tiny-rss-filter-after-date=. The date is expected to follow the
-   structure  YYYY-MM-DD."
-    (let ((date (nth 1 item)))
-      (if (string> date tiny-rss-filter-after-date)
-          t nil)))
+   =tiny-rss-filter-after-date= which should follow the format
+   YYYYMMDD. The date in the rss properties is expected to follow
+   rfc822 format."
+  (let* ((parsed (tiny-rss-parse-rfc822-timestamp (nth 1 item)))
+         (day (nth 1 parsed))
+         (month (nth 2 parsed))
+         (year (nth 3 parsed)))
+    (setq month (tiny-rss-rfc822-month-to-number month))
+    (if (string> (concat year month day) tiny-rss-filter-after-date)
+    t nil)))
 #+end_src
 
 It is easy to imagine how you could use this to filter just the
 posts of the last month, for example.
+
+*** Encorce rfc822
+
+The RSS 2.0 date format follows RFC822's conventions, a full
+date looks like =Sat, 07 Sep 2002 00:00:01 GMT=. This in not
+enforced by default, however you can check that the format
+is correct by specifying =encorfe-rfc822 t= in the arguments
+to =tiny-rss-generate=:
+
+#+begin_src emacs-lisp
+  (setq tiny-rss-filter-after-date "20250301")
+  (tiny-rss-generate
+   :input-directory "~/projects/tiny-rss/examples"
+   :output-directory "~/projects/tiny-rss/output"
+   :enforce-rfc822 t)
+#+end_src
 
 ** Motivation
 

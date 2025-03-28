@@ -7,7 +7,7 @@
 :PROPERTIES:
 :TITLE: How I created tiny-rss
 :RSS: true
-:DATE: 2025-02-22
+:DATE: 22 Feb 2025 14:45:30 PST
 :CATEGORY: Blog
 :AUTHOR: John Snow
 :LINK: https://github.com/San7o/tiny-rss/
@@ -19,7 +19,7 @@ In the begninning there was darkness
 :PROPERTIES:
 :TITLE: I'd just like to interject for a moment
 :RSS: true
-:DATE: 2025-03-22
+:DATE: Sat, 22 Feb 2025 08:15:00 EST
 :CATEGORY: Blog
 :AUTHOR: Richard Stallman
 :LINK: https://boards.4chan.org/g/
