@@ -23,13 +23,13 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
-;;; Quickstart:
+;;; Commentary:
 
 ;; To generate a feed item from an heading, you can add the properties
 ;; =TITLE=, =RSS=, =DATE=, =AUTHOR=, =LINK= and =CATEGORY= to the
-;; heading, like in the below example. Note that only the =RSS=
-;; property is required to generate the feed item. If no title is
-;; specified, It will default to the title of the heading. Other
+;; heading, like in the below example.  Note that only the =RSS=
+;; property is required to generate the feed item.  If no title is
+;; specified, It will default to the title of the heading.  Other
 ;; unspecified properties will be set to =nil=.
 
 ;; #+begin_src org
@@ -48,7 +48,7 @@
 ;; the arguments =input-directory= and =output-directory=, representing
 ;; respectively the input directory where the org files are fetched, and
 ;; the output directory where the =.rss= files will be generated.  If the
-;; output directory does not exist, It will be created. Additional
+;; output directory does not exist, It will be created.  Additional
 ;; options are documented later.
 
 ;; #+begin_src emacs-lisp
@@ -60,28 +60,33 @@
 
 ;; =tiny-rss= will generate a different =.rss= feed for each specified
 ;; category, and aggregate all the rss items with the same category in
-;; the same category file. Each feed filename follows the convention
-;; =feed$CATEGORY.rss=. Each item will contain the properties specified in
+;; the same category file.  Each feed filename follows the convention
+;; =feed$CATEGORY.rss=.  Each item will contain the properties specified in
 ;; the header and all the content under that header, converted in html.
+
+;;; Code:
 
 (require 'org)
 (require 'ox-html)
 
-;;; Filters
+;;; Filters:
 
 (defun tiny-rss-filter-accept (item)
-  "Default filter used by tiny-rss. A filter takes an item and
-   returns either t or nil specifying if this RSS
-   item should be included in the output or not, respectively. To
-   know how to parse an item, please read the documentation of
-   the function =tiny-rss-get-items=."
+  "Default filter used by tiny-rss.
+A filter takes an ITEM and
+returns either t or nil specifying if this RSS
+item should be included in the output or not, respectively.  To
+know how to parse an item, please read the documentation of
+the function =tiny-rss-get-items=."
   t)
 
 (defun tiny-rss-filter-after-date (item)
-  "Accepts only the dates past the date set in the variable
-   =tiny-rss-filter-after-date= which should follow the format
-   YYYYMMDD. The date in the rss properties is expected to follow
-   rfc822 format."
+  "Accepts only the dates past a certain date.
+This date is fetched in the variable =tiny-rss-filter-after-date=.
+This variable should follow the format
+YYYYMMDD.  The date in the rss properties is expected to follow
+rfc822 format.
+Argument ITEM An RSS item to be checked"
   (let* ((parsed (tiny-rss-rfc822-parse-timestamp (nth 1 item)))
          (day (nth 1 parsed))
          (month (nth 2 parsed))
@@ -90,32 +95,32 @@
     (if (string> (concat year month day) tiny-rss-filter-after-date)
     t nil)))
 
-;;; Core
+;;; Core:
 
 (defun tiny-rss-generate (&rest args)
   "Entrypoint of tiny-rss to generate the RSS feed from org files.
-   The user can specify the following options:
-   - REQUIRED input-directory string: the path of the directory where the org
-     files are stored. This will be traversed recursively and all the
-     files ending with .org will be checked for headings with the
-     RSS property set to true.
-   - REQUIRED output-directory string: the path of the directory where the
-     .rss files will be generated. If the directory does not exist,
-     Iw ill be created.
-   - OPTIONAL category-info: a list of category-info. A single
-     category-info is a list with the elements:
-     - category: the feed category for which this information belongs
-     - title: the title of the category
-     - link: a link to a website or the homepage of the category
-     - description: a description of the feed category
-     tiny-rss will create a different .rss file for each specified
-     category. RSS items with the same category will be aggregated in
-     the same .rss file. This options lets the user specify metadata
-     for the specific category. By default, all values are nil. If the
-     category selected is nil, the information are ment for the default
-     category (or no category, they are the same thing).
-   - OPTIONAL enforce-rfc822 t or nil: check for compliance with rfc822
-              for dates. Default is nil."
+The user can specify the following options as ARGS:
+- REQUIRED input-directory string: the path of the directory where the org
+  files are stored.  This will be traversed recursively and all the
+  files ending with .org will be checked for headings with the
+  RSS property set to true.
+- REQUIRED output-directory string: the path of the directory where the
+  .rss files will be generated.  If the directory does not exist,
+  It will be created.
+- OPTIONAL category-info: a list of category-info.  A single
+  category-info is a list with the elements:
+ - category: the feed category for which this information belongs
+  - title: the title of the category
+  - link: a link to a website or the homepage of the category
+  - description: a description of the feed category
+  tiny-rss will create a different .rss file for each specified
+  category.  RSS items with the same category will be aggregated in
+  the same .rss file.  This options lets the user specify metadata
+  for the specific category.  By default, all values are nil.  If the
+  category selected is nil, the information are ment for the default
+  category (or no category, they are the same thing).
+- OPTIONAL enforce-rfc822 t or nil: check for compliance with rfc822
+  for dates.  Default is nil."
   (let ((input-directory (plist-get args :input-directory))
         (output-directory (plist-get args :output-directory))
         (categories-info (plist-get args :category-info))
@@ -138,16 +143,16 @@
       (error "tiny-rss-generate: No input directory specified"))))
 
 (defun tiny-rss-traverse-recursive (directory)
-  "Recusrively traverse a directory and return a list
-   of RSS items."
+  "Recusrively traverse a DIRECTORY and return a list of RSS items."
   (let* ((files-relative (directory-files-recursively directory "\\.org$" t))
          (files (mapcar 'expand-file-name files-relative)))
     (mapcar 'tiny-rss-get-items files)))
 
 (defun tiny-rss-get-items (filename)
-  "Generate a list of RSS items from a file. An RSS item is a list
-   of strings with the following structure:
-   (TITLE DATE CATEGORY AUTHOR LINK CONTENT)"
+  "Generate a list of RSS items from a file.
+An RSS item is a list of strings with the following structure:
+\(TITLE DATE CATEGORY AUTHOR LINK CONTENT)
+Argument FILENAME The org file that will be parsed."
   (let ((buffer (find-file filename))
          (items))
     (if buffer
@@ -168,10 +173,17 @@
               (setq items (append items (list item))))
            "RSS=\"true\"" 'file)
           items)
-      (error "tiny-rss-get-items: unable to get buffer " filename))))
+      (error "tiny-rss-get-items: Unable to get buffer " filename))))
 
 (defun tiny-rss-output (output-directory categories-info items-list filter)
-  "Write the RSS items to .rss files."
+  "Write the RSS items to .rss files.
+Argument OUTPUT-DIRECTORY The path to the directory where the .rss
+files will be generated.
+Argument CATEGORIES-INFO User provided information about categories.
+Please read =tiny-rss-generate= for more information.
+Argument ITEMS-LIST The list of items to write.  Read
+=tiny-tss-get-items= for additional info.
+Argument FILTER User provided filter."
   (tiny-rss-create-rss-files output-directory categories-info items-list filter)
   (dolist (item-list items-list)
     (dolist (item item-list)
@@ -187,12 +199,18 @@
   (tiny-rss-files-add-closing-tags output-directory items-list filter))
 
 (defun tiny-rss-file-name-from-category (output-directory category)
-  "Returns the name of the .rss file for a specific category concatenated
-   with the output directory."
+  "Return the name of the .rss file for a specific CATEGORY.
+The name is concatenated with the output directory.
+Argument OUTPUT-DIRECTORY Output directory path."
   (concat output-directory "/feed" category ".rss"))
 
 (defun tiny-rss-create-rss-files (output-directory categories-info items-list filter)
-  "Create the rss files from a list of rss items."
+  "Create the rss files from a list of rss items.
+Argument OUTPUT-DIRECTORY Path to the directory where the .rss files
+will be generated.
+Argument CATEGORIES-INFO User provided information for categories.
+Argument ITEMS-LIST List of RSS items.
+Argument FILTER User provided filter function."
   (dolist (item-list items-list)
     (dolist (item item-list)
       (let* ((category (nth 2 item))
@@ -201,8 +219,11 @@
             (tiny-rss-create-rss-file file category categories-info))))))
 
 (defun tiny-rss-files-add-closing-tags (output-directory items-list filter)
-  "Close xml tags at the end of the .rss files. This is called after
-   all the items have been inserted."
+  "Close xml tags at the end of the .rss files.
+This is called after all the items have been inserted.
+Argument OUTPUT-DIRECTORY Directory where the .rss files are located.
+Argument ITEMS-LIST List of RSS items.
+Argument FILTER Filtering function."
   (dolist (item-list items-list)
     (dolist (item item-list)
       (let* ((category (nth 2 item))
@@ -214,14 +235,17 @@
                   (append-to-file closing-tags nil file))))))))
         
 (defun buffer-contains-substring (string)
-  "Returns t if the current buffer contains a substring."
+  "Return t if the current buffer contain a substring.
+Argument STRING The substring that will be matched."
   (save-excursion
     (save-match-data
       (goto-char (point-min))
       (search-forward string nil t))))
 
 (defun tiny-rss-create-rss-file (file category categories-info)
-  "Create an .rss file with the specified fields."
+  "Create an .rss FILE with the specified fields.
+Argument CATEGORY Category of the feed.
+Argument CATEGORIES-INFO List of category-info."
   (let ((directory (file-name-directory file))
         (title nil)
         (link nil)
@@ -246,7 +270,12 @@
      nil file)))
 
 (defun tiny-rss-add-feed-to-file (title date category author link content file)
-  "Append a single item entry in an .rss file with the specified fields."
+  "Append a single item entry in an .rss FILE with the specified fields.
+Argument TITLE Title of the RSS item.
+Argument DATE Date of the RSS item.
+Argument CATEGORY Category of the RSS item.
+Argument AUTHOR Author of the RSS item.
+Argument LINK A link, usually displayed at the end of the feed by RSS clients pointing to a web render of the CONTENT."
   (message (concat "tiny-rss: adding feed to file" file))
   (append-to-file
    (format (concat
@@ -260,13 +289,14 @@
             title link author date content)
    nil file))
 
-;;; rfc822 related functions
+;;; rfc822 related functions:
 
 (setq tiny-rss-rfc822-pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
 
 (defun tiny-rss-rfc822-check (items-list)
-  "Check if dates in items are compatible with rfc822. Throws an error
-   if a date is not compliant."
+  "Check if dates in items are compatible with rfc822.
+Throws an error if a date is not compliant, specifying which date.
+Argument ITEMS-LIST List of items to check."
   (dolist (item-list items-list)
     (dolist (item item-list)
       (let* ((timestamp (nth 1 item))
@@ -275,8 +305,8 @@
             (error "tiny-rss-rfc822-check: " timestamp " is not rfc822"))))))
 
 (defun tiny-rss-rfc822-parse-timestamp (timestamp)
-  "Parse a timestamp like 'Wed, 27 Mar 2024 14:30:00 GMT' and return a
-   list with the following structure:
+  "Parse a TIMESTAMP like and return a list of the parsed data.
+The requrned list has the following structure:
    (DAY-NAME DAY MONTH YEAR HOUR MINUTE SECONDS TIMEZONE)"
   (if (string-match tiny-rss-rfc822-pattern timestamp)
       (list (match-string 1 timestamp)  ;; Optional day of the week
@@ -290,8 +320,7 @@
     (error "Error parsing date " timestamp ". does it follow rfc822?")))
 
 (defun tiny-rss-rfc822-month-to-number (month)
-  "Convert a three-letter month abbreviation (e.g., 'Sep') to a
-   two-digit string (e.g., '09')."
+  "Convert a three-letter MONTH abbreviation to a two-digit string."
   (cdr (assoc month '(("Jan" . "01") ("Feb" . "02") ("Mar" . "03")
                       ("Apr" . "04") ("May" . "05") ("Jun" . "06")
                       ("Jul" . "07") ("Aug" . "08") ("Sep" . "09")
@@ -299,5 +328,4 @@
 
 (provide 'tiny-rss)
 
-;; tiny-rss.el end
- 
+;;; tiny-rss.el ends here
