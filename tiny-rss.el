@@ -46,7 +46,7 @@
 
 ;; To generate the RSS file[s], call =tiny-rss-generate= with at least
 ;; the arguments =input-directory= and =output-directory=, representing
-;; respectively the infput firectory where the org files are fetched, and
+;; respectively the input directory where the org files are fetched, and
 ;; the output directory where the =.rss= files will be generated.  If the
 ;; output directory does not exist, It will be created. Additional
 ;; options are documented later.
@@ -58,8 +58,8 @@
 ;;    :output-directory "/output/dir/here")
 ;; #+end_src
 
-;; =tiny-rss= will generate a different =.rss= feed for each category
-;; available, and aggregate all the rss items with the same category in
+;; =tiny-rss= will generate a different =.rss= feed for each specified
+;; category, and aggregate all the rss items with the same category in
 ;; the same category file. Each feed filename follows the convention
 ;; =feed$CATEGORY.rss=. Each item will contain the properties specified in
 ;; the header and all the content under that header, converted in html.
