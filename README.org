@@ -92,8 +92,8 @@ posts of the last month, for example.
 
 The RSS 2.0 date format follows RFC822's conventions, a full
 date looks like =Sat, 07 Sep 2002 00:00:01 GMT=. This in not
-enforced by default, however you can check that the format
-is correct by specifying =encorfe-rfc822 t= in the arguments
+enforced by default, however you can assert that the feeds follow
+the convention by specifying =enforce-rfc822 t= in the arguments
 to =tiny-rss-generate=:
 
 #+begin_src emacs-lisp
