@@ -5,8 +5,8 @@
 
 ** How I created tiny-rss
 :PROPERTIES:
-:TITLE: How I created tiny-rss
 :RSS: true
+:TITLE: How I created tiny-rss
 :DATE: 22 Feb 2025 14:45:30 PST
 :CATEGORY: Blog
 :AUTHOR: John Snow
@@ -17,7 +17,6 @@ Here I describe how I created tiny-rss
 In the begninning there was darkness
 ** I'd just like to interject for a moment.
 :PROPERTIES:
-:TITLE: I'd just like to interject for a moment
 :RSS: true
 :DATE: Sat, 25 Mar 2025 08:15:00 EST
 :CATEGORY: Blog

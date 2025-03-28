@@ -4,7 +4,7 @@
 ;; Author: Giovanni Santini <santigio2003@gmail.com>
 ;; Maintainer: Giovanni Santini <santigio2003@gmail.com>
 ;; Version: 0.0.1
-;; Package-Requires: ((emacs "26.1") (org "9.3"))
+;; Package-Requires: ((emacs "26.1") (org "9.3") (ox-html))
 ;; Keywords: org, blog, feed, rss
 ;; Homepage: https://github.com/San7o/tiny-rss.git
 
@@ -23,42 +23,46 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
-;;; Guide:
+;;; Quickstart:
 
 ;; To generate a feed item from an heading, you can add the properties
 ;; =TITLE=, =RSS=, =DATE=, =AUTHOR=, =LINK= and =CATEGORY= to the
 ;; heading, like in the below example. Note that only the =RSS=
-;; property is required to generate the feed item and the properties
-;; that are not specified will be set to =nil=.
-;;
-;;  #+begin_src org
-;;  * My blog post!
+;; property is required to generate the feed item. If no title is
+;; specified, It will default to the title of the heading. Other
+;; unspecified properties will be set to =nil=.
+
+;; #+begin_src org
+;; * My blog post!
 ;;   :PROPERTIES:
-;;   :TITLE: Just a Test
 ;;   :RSS: t
-;;   :DATE: 22-03-2025
+;;   :DATE: 22 Feb 2025 14:45:30 PST
 ;;   :CATEGORY: Tech
 ;;   :AUTHOR: Richard Stallman
-;;   :LINK: myblog.com/test.html
+;;   :LINK: myblog.com/my-blog.html
 ;;   :END:
 ;;   My beautiful blog here...
 ;; #+end_src
-;;
-;; To generate the RSS file[s], call =tiny-rss-generate=:
-;;
+
+;; To generate the RSS file[s], call =tiny-rss-generate= with at least
+;; the arguments =input-directory= and =output-directory=, representing
+;; respectively the infput firectory where the org files are fetched, and
+;; the output directory where the =.rss= files will be generated.  If the
+;; output directory does not exist, It will be created. Additional
+;; options are documented later.
+
 ;; #+begin_src emacs-lisp
-;;  (require 'tiny-rss)
-;;  (tiny-rss-generate
-;;   :input-directory "/my/org/files"
-;;   :output-directory "/output/dir/here"
-;;   :title "My RSS"
-;;   :link "mywebsite.com"
-;;   :description "Read all my RSS feeds")
+;;   (require 'tiny-rss)
+;;   (tiny-rss-generate
+;;    :input-directory "/my/org/files"
+;;    :output-directory "/output/dir/here")
 ;; #+end_src
-;;
-;; Only =input-directory= and =output-directory= are required. The
-;; generated RSS items will contain all the content under the heading,
-;; in html.
+
+;; =tiny-rss= will generate a different =.rss= feed for each category
+;; available, and aggregate all the rss items with the same category in
+;; the same category file. Each feed filename follows the convention
+;; =feed$CATEGORY.rss=. Each item will contain the properties specified in
+;; the header and all the content under that header, converted in html.
 
 (require 'org)
 (require 'ox-html)
@@ -151,14 +155,17 @@
         (with-current-buffer buffer
           (org-map-entries
            '(let* ((item)
-                  (title (org-entry-get (point) "TITLE"))
-                  (date (org-entry-get (point) "DATE"))
-                  (category (org-entry-get (point) "CATEGORY"))
-                  (author (org-entry-get (point) "AUTHOR"))
-                  (link (org-entry-get (point) "LINK"))
-                  (html-buffer (org-html-export-as-html nil t nil t))
-                  (content (with-current-buffer "*Org HTML Export*" (buffer-string)))
-                  (item (list title date category author link content)))
+                   (title (org-entry-get (point) "TITLE"))
+                   (title-real (if (not title) ;; Fallback to heading name
+                                   (org-entry-get nil "ITEM")
+                                 title))
+                   (date (org-entry-get (point) "DATE"))
+                   (category (org-entry-get (point) "CATEGORY"))
+                   (author (org-entry-get (point) "AUTHOR"))
+                   (link (org-entry-get (point) "LINK"))
+                   (html-buffer (org-html-export-as-html nil t nil t))
+                   (content (with-current-buffer "*Org HTML Export*" (buffer-string)))
+                   (item (list title-real date category author link content)))
               (setq items (append items (list item))))
            "RSS=\"true\"" 'file)
           items)
