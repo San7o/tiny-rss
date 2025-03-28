@@ -1,4 +1,4 @@
-;; tiny-rss.el -- Flexible RSS 2.0 generator from org headings
+;; tiny-rss.el -- Flexible RSS 2.0 generator from org headings -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013-2021 Free Software Foundation, Inc.
 ;; Author: Giovanni Santini <santigio2003@gmail.com>
@@ -157,26 +157,22 @@ The user can specify the following options as ARGS:
 An RSS item is a list of strings with the following structure:
 \(TITLE DATE CATEGORY AUTHOR LINK CONTENT)
 Argument FILENAME The org file that will be parsed."
-  (let ((buffer (find-file filename))
-         (items))
+  (let ((buffer (find-file filename))) ;; Open the file
     (if buffer
         (with-current-buffer buffer
-          (org-map-entries
-           '(let* ((item)
-                   (title (org-entry-get (point) "TITLE"))
-                   (title-real (if (not title) ;; Fallback to heading name
-                                   (org-entry-get nil "ITEM")
-                                 title))
-                   (date (org-entry-get (point) "DATE"))
-                   (category (org-entry-get (point) "CATEGORY"))
-                   (author (org-entry-get (point) "AUTHOR"))
-                   (link (org-entry-get (point) "LINK"))
-                   (html-buffer (org-html-export-as-html nil t nil t))
-                   (content (with-current-buffer "*Org HTML Export*" (buffer-string)))
-                   (item (list title-real date category author link content)))
-              (setq items (append items (list item))))
-           "RSS=\"true\"" 'file)
-          items)
+          (apply 'append ;; Flatten the list
+                 (org-map-entries
+                  (lambda ()
+                    (let* ((title (org-entry-get (point) "TITLE"))
+                           (title-real (or title (org-entry-get nil "ITEM"))) ;; Fallback to heading name
+                           (date (org-entry-get (point) "DATE"))
+                           (category (org-entry-get (point) "CATEGORY"))
+                           (author (org-entry-get (point) "AUTHOR"))
+                           (link (org-entry-get (point) "LINK"))
+                           (html-buffer (org-html-export-as-html nil t nil t))
+                           (content (with-current-buffer "*Org HTML Export*" (buffer-string))))
+                      (list (list title-real date category author link content)))) ;; Return a list containing the item
+                  "RSS=\"true\"" 'file)))
       (error "tiny-rss-get-items: Unable to get buffer %s" filename))))
 
 (defun tiny-rss-output (output-directory categories-info items-list filter)
