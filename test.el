@@ -4,7 +4,7 @@
 (setq debug-on-error t)
 ;;(debug-on-entry 'tiny-rss-generate)
 
-(if (not (tiny-rss-parse-rfc822-timestamp "Wed, 27 Mar 2024 14:30:00 GMT"))
+(if (not (tiny-rss-rfc822-parse-timestamp "Wed, 27 Mar 2024 14:30:00 GMT"))
     (error "Error parsing rfc822"))
 
 (setq tiny-rss-filter-after-date "20250301")

@@ -136,8 +136,6 @@ everything. The simplicity of the program is simply amazing.
 
 The RSS generator works well, however It can be improved in many
 ways. Here are some ideas:
-- automatically generate the link property if not specified based
-  on the file path and the output directory path
 - improve the documentation to get ready for MELPA.
 
 ** License

@@ -78,7 +78,7 @@
    =tiny-rss-filter-after-date= which should follow the format
    YYYYMMDD. The date in the rss properties is expected to follow
    rfc822 format."
-  (let* ((parsed (tiny-rss-parse-rfc822-timestamp (nth 1 item)))
+  (let* ((parsed (tiny-rss-rfc822-parse-timestamp (nth 1 item)))
          (day (nth 1 parsed))
          (month (nth 2 parsed))
          (year (nth 3 parsed)))
@@ -120,7 +120,7 @@
                 (progn
                   (setq output-directory (expand-file-name output-directory))
                   (if enforce-rfc822
-                      (if (not (tiny-rss-check-rfc822 items-list))
+                      (if (not (tiny-rss-rfc822-check items-list))
                           (error "Date is not compliant with rfc822")))
                   (tiny-rss-output output-directory title link description items-list filter)
                   (print "RSS feed generated"))
@@ -241,30 +241,30 @@
 
 ;;; rfc822 related functions
 
-(defun tiny-rss-check-rfc822 (items-list)
+(setq tiny-rss-rfc822-pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
+
+(defun tiny-rss-rfc822-check (items-list)
   "Check if dates in items are compatible with rfc822. Returns t or nil."
-  (let ((pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)")
-        (matched t))
+  (let ((matched t))
     (dolist (item-list items-list)
       (dolist (item item-list)
-        (setq matched (and matched (string-match pattern (nth 1 item))))))
+        (setq matched (and matched (string-match tiny-rss-rfc822-pattern (nth 1 item))))))
     (if matched t nil)))
 
-(defun tiny-rss-parse-rfc822-timestamp (timestamp)
+(defun tiny-rss-rfc822-parse-timestamp (timestamp)
   "Parse a timestamp like 'Wed, 27 Mar 2024 14:30:00 GMT' and return a
    list of components with the following structure:
    (DAY-NAME DAY MONTH YEAR HOUR MINUTE SECONDS TIMEZONE)"
-  (let ((pattern "\\(?:\\(Mon\\|Tue\\|Wed\\|Thu\\|Fri\\|Sat\\|Sun\\), \\)?\\([0-9]\\{2\\}\\) \\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\) \\([0-9]\\{4\\}\\) \\([0-9]\\{2\\}\\):\\([0-9]\\{2\\}\\)\\(?::\\([0-9]\\{2\\}\\)?\\) \\(UT\\|GMT\\|EST\\|EDT\\|CST\\|CDT\\|MST\\|MDT\\|PST\\|PDT\\|1ALPHA\\|[+-][0-9]\\{4\\}\\)"))
-    (if (string-match pattern timestamp)
-        (list (match-string 1 timestamp)  ;; Optional day of the week
-              (match-string 2 timestamp)  ;; Day
-              (match-string 3 timestamp)  ;; Month
-              (match-string 4 timestamp)  ;; Year
-              (match-string 5 timestamp)  ;; Hour
-              (match-string 6 timestamp)  ;; Minute
-              (match-string 7 timestamp)  ;; Optional seconds
-              (match-string 8 timestamp)) ;; Time zone
-      (error "Error parsing date, does it follow rfc822?"))))
+  (if (string-match tiny-rss-rfc822-pattern timestamp)
+      (list (match-string 1 timestamp)  ;; Optional day of the week
+            (match-string 2 timestamp)  ;; Day
+            (match-string 3 timestamp)  ;; Month
+            (match-string 4 timestamp)  ;; Year
+            (match-string 5 timestamp)  ;; Hour
+            (match-string 6 timestamp)  ;; Minute
+            (match-string 7 timestamp)  ;; Optional seconds
+            (match-string 8 timestamp)) ;; Time zone
+    (error "Error parsing date, does it follow rfc822?")))
 
 (defun tiny-rss-rfc822-month-to-number (month)
   "Convert a three-letter month abbreviation (e.g., 'Sep') to a
