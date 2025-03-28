@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel>
-<title>My RSS</title>
-<link>mywebsite.com</link>
-<description><![CDATA[Read all my RSS feeds]]></description>
+<title>MyTech</title>
+<link>tech-website.com</link>
+<description><![CDATA[RSS for Tech news]]></description>
 <item>
 <title>All you need is C</title>
 <link>https://en.cppreference.com/w/</link>

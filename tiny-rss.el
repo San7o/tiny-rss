@@ -98,16 +98,23 @@
    - REQUIRED output-directory string: the path of the directory where the
      .rss files will be generated. If the directory does not exist,
      Iw ill be created.
-   - OPTIONAL title string: the global title of the feed
-   - OPTIONAL link string: a link to your website
-   - OPTIONAL description string: a description of your website
+   - OPTIONAL category-info: a list of category-info. A single
+     category-info is a list with the elements:
+     - category: the feed category for which this information belongs
+     - title: the title of the category
+     - link: a link to a website or the homepage of the category
+     - description: a description of the feed category
+     tiny-rss will create a different .rss file for each specified
+     category. RSS items with the same category will be aggregated in
+     the same .rss file. This options lets the user specify metadata
+     for the specific category. By default, all values are nil. If the
+     category selected is nil, the information are ment for the default
+     category (or no category, they are the same thing).
    - OPTIONAL enforce-rfc822 t or nil: check for compliance with rfc822
               for dates. Default is nil."
   (let ((input-directory (plist-get args :input-directory))
         (output-directory (plist-get args :output-directory))
-        (title (plist-get args :title))
-        (link (plist-get args :link))
-        (description (plist-get args :description))
+        (categories-info (plist-get args :category-info))
         (filter (plist-get args :filter))
         (enforce-rfc822 (plist-get args :enforce-rfc822)))
     (if (not filter)
@@ -122,8 +129,8 @@
                   (if enforce-rfc822
                       (if (not (tiny-rss-rfc822-check items-list))
                           (error "Date is not compliant with rfc822")))
-                  (tiny-rss-output output-directory title link description items-list filter)
-                  (print "RSS feed generated"))
+                  (tiny-rss-output output-directory categories-info items-list filter)
+                  (print "tiny-rss-generate: RSS feed generated successfully"))
               (error "tiny-rss-generate: No output directory specified"))))
       (error "tiny-rss-generate: No input directory specified"))))
 
@@ -157,9 +164,9 @@
           items)
       (error "tiny-rss-get-items: unable to get buffer"))))
 
-(defun tiny-rss-output (output-directory title link description items-list filter)
+(defun tiny-rss-output (output-directory categories-info items-list filter)
   "Write the RSS items to .rss files."
-  (tiny-rss-create-rss-files output-directory title link description items-list filter)
+  (tiny-rss-create-rss-files output-directory categories-info items-list filter)
   (dolist (item-list items-list)
     (dolist (item item-list)
       (let* ((title-item (nth 0 item))
@@ -178,14 +185,14 @@
    with the output directory."
   (concat output-directory "/feed" category ".rss"))
 
-(defun tiny-rss-create-rss-files (output-directory title link description items-list filter)
+(defun tiny-rss-create-rss-files (output-directory categories-info items-list filter)
   "Create the rss files from a list of rss items."
   (dolist (item-list items-list)
     (dolist (item item-list)
       (let* ((category (nth 2 item))
              (file (tiny-rss-file-name-from-category output-directory category)))
         (if (funcall filter item)
-            (tiny-rss-create-rss-file file title link description))))))
+            (tiny-rss-create-rss-file file category categories-info))))))
 
 (defun tiny-rss-files-add-closing-tags (output-directory items-list filter)
   "Close xml tags at the end of the .rss files. This is called after
@@ -208,11 +215,20 @@
       (goto-char (point-min))
       (search-forward string nil t))))
 
-(defun tiny-rss-create-rss-file (file title link description)
+(defun tiny-rss-create-rss-file (file category categories-info)
   "Create an .rss file with the specified fields."
-  (let ((directory (file-name-directory file)))
+  (let ((directory (file-name-directory file))
+        (title nil)
+        (link nil)
+        (description nil))
     (if (not (file-directory-p directory))
         (make-directory (file-name-directory file)))
+    (dolist (category-info categories-info)
+      (if (string= category (plist-get category-info :category))
+          (progn
+            (setq title (plist-get category-info :title))
+            (setq link (plist-get category-info :link))
+            (setq description (plist-get category-info :description)))))
     (write-region
      (format (concat
               "<?xml version=\"1.0\" encoding=\"utf-8\"?>"

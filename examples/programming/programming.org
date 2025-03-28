@@ -1,14 +1,14 @@
 #+startup: content indent
 
-* Programming
+* Tech
 
-My thoughts on programming languages
+My thoughts on technology
 
 ** All you need is C
 :PROPERTIES:
 :TITLE: All you need is C
 :DATE: "Sat, 22 Mar 2025 19:30:45 CDT"
-:CATEGORY: Programming
+:CATEGORY: Tech
 :RSS: true
 :AUTHOR: Everyone
 :LINK: https://en.cppreference.com/w/

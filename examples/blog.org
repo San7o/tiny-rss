@@ -19,7 +19,7 @@ In the begninning there was darkness
 :PROPERTIES:
 :TITLE: I'd just like to interject for a moment
 :RSS: true
-:DATE: Sat, 22 Feb 2025 08:15:00 EST
+:DATE: Sat, 25 Mar 2025 08:15:00 EST
 :CATEGORY: Blog
 :AUTHOR: Richard Stallman
 :LINK: https://boards.4chan.org/g/

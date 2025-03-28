@@ -10,39 +10,71 @@ support for multiple feeds for different categories and filters.
 To generate a feed item from an heading, you can add the properties
 =TITLE=, =RSS=, =DATE=, =AUTHOR=, =LINK= and =CATEGORY= to the
 heading, like in the below example. Note that only the =RSS=
-property is required to generate the feed item and the properties
-that are not specified will be set to =nil=.
+property is required to generate the feed item. Unspecified
+properties will be set to the default value of =nil=.
 
 #+begin_src org
 * My blog post!
   :PROPERTIES:
-  :TITLE: Just a Test
+  :TITLE: My plog post!
   :RSS: t
-  :DATE: 22-03-2025
+  :DATE: 22 Feb 2025 14:45:30 PST
   :CATEGORY: Tech
   :AUTHOR: Richard Stallman
-  :LINK: myblog.com/test.html
+  :LINK: myblog.com/my-blog.html
   :END:
   My beautiful blog here...
 #+end_src
 
-To generate the RSS file[s], call =tiny-rss-generate=:
+To generate the RSS file[s], call =tiny-rss-generate= with at least
+the arguments =input-directory= and =output-directory=, representing
+respectively the infput firectory where the org files are fetched, and
+the output directory where the =.rss= files will be generated.  If the
+output directory does not exist, It will be created. Additional
+options are documented later.
 
 #+begin_src emacs-lisp
   (require 'tiny-rss)
   (tiny-rss-generate
    :input-directory "/my/org/files"
-   :output-directory "/output/dir/here"
-   :title "My RSS"
-   :link "mywebsite.com"
-   :description "Read all my RSS feeds")
+   :output-directory "/output/dir/here")
 #+end_src
 
-Only =input-directory= and =output-directory= are required. The
-generated RSS items will contain all the content under the heading,
-in html.
+=tiny-rss= will generate a different =.rss= feed for each category
+available, and aggregate all the rss items with the same category in
+the same category file. Each feed filename follows the convention
+=feed$CATEGORY.rss=. Each item will contain the properties specified in
+the header and all the content under that header, converted in html.
 
 ** Advanced Usage
+*** Category Info
+
+The user can specify metadata information about each category.
+Those information include a =title=, a =link= and a =description=.
+Each =.rss= file will contain those three fileds which are fetched
+by clients, so you you may be interested in setting them.
+
+To specify information about certain categories, you can pass a
+list of category information to =tiny-rss-generate= via
+=category-info= like this:
+#+begin_src emacs-lisp
+  (tiny-rss-generate
+   :input-directory "~/projects/tiny-rss/examples"
+   :output-directory "~/projects/tiny-rss/output"
+   :category-info '((:category "Blog"
+                               :title "RSS for my blog"
+                               :link "my-website.com"
+                               :description "My RSS feeds")
+                    (:category "Tech"
+                               :title "MyTech"
+                               :link "tech-website.com"
+                               :description "RSS for Tech news")))
+#+end_src
+
+Note that if you don't specify a category name, or you set it
+to =nil=, the information will refer to the default category
+(or no category, which is the same thing).
+Any unspecified info will be set to =nil= by default.
 
 *** Filters
 
@@ -51,7 +83,7 @@ takes an RSS item and returns either t or nil specifying if this RSS
 item should be included in the output or not, respectively. An
 item is a list with the form =(TITLE DATE CATEGORY AUTHOR LINK CONTENT)=.
 
-For example, this is the simples filter you can write, which
+For example, this is the simplest filter you can write, which
 accepts everything:
 #+begin_src emacs-lisp
 (defun tiny-rss-filter-accept (item)
@@ -138,7 +170,7 @@ The RSS generator works well, however It can be improved in many
 ways. Here are some ideas:
 - better error handling, specifying where the errors happened
   instead of displaying a generic error
-- add customization options for categories
+- automatically get the title from the heading, if left unspecified
 - improve the documentation to get ready for MELPA.
 
 ** License

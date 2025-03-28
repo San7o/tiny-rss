@@ -8,11 +8,17 @@
     (error "Error parsing rfc822"))
 
 (setq tiny-rss-filter-after-date "20250301")
+
 (tiny-rss-generate
  :input-directory "~/projects/tiny-rss/examples"
  :output-directory "~/projects/tiny-rss/output"
- :title "My RSS"
- :link "mywebsite.com"
- :description "Read all my RSS feeds"
+ :category-info '((:category "Blog"
+                             :title "RSS for my blog"
+                             :link "my-website.com"
+                             :description "My RSS feeds")
+                  (:category "Tech"
+                             :title "MyTech"
+                             :link "tech-website.com"
+                             :description "RSS for Tech news"))
  :filter 'tiny-rss-filter-after-date
  :enforce-rfc822 t)
