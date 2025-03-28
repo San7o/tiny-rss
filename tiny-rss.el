@@ -72,17 +72,19 @@
 ;;; Filters:
 
 (defun tiny-rss-filter-accept (item)
-  "Default filter used by tiny-rss.
-A filter takes an ITEM and
-returns either t or nil specifying if this RSS
-item should be included in the output or not, respectively.  To
+  "Filter to accept every ITEM.
+
+This is the default filter used by tiny-rss, if none are specified.
+A filter takes an ITEM and returns either t or nil specifying if this
+RSS item should be included in the output or not, respectively.  To
 know how to parse an item, please read the documentation of
 the function =tiny-rss-get-items=."
   t)
 
 (defun tiny-rss-filter-after-date (item)
-  "Accepts only the dates past a certain date.
-This date is fetched in the variable =tiny-rss-filter-after-date=.
+  "Filter to accept only the dates past a certain other date.
+
+This other date is fetched in the variable =tiny-rss-filter-after-date=.
 This variable should follow the format
 YYYYMMDD.  The date in the rss properties is expected to follow
 rfc822 format.
@@ -99,6 +101,7 @@ Argument ITEM An RSS item to be checked"
 
 (defun tiny-rss-generate (&rest args)
   "Entrypoint of tiny-rss to generate the RSS feed from org files.
+
 The user can specify the following options as ARGS:
 - REQUIRED input-directory string: the path of the directory where the org
   files are stored.  This will be traversed recursively and all the
@@ -150,6 +153,7 @@ The user can specify the following options as ARGS:
 
 (defun tiny-rss-get-items (filename)
   "Generate a list of RSS items from a file.
+
 An RSS item is a list of strings with the following structure:
 \(TITLE DATE CATEGORY AUTHOR LINK CONTENT)
 Argument FILENAME The org file that will be parsed."
@@ -173,10 +177,11 @@ Argument FILENAME The org file that will be parsed."
               (setq items (append items (list item))))
            "RSS=\"true\"" 'file)
           items)
-      (error "tiny-rss-get-items: Unable to get buffer " filename))))
+      (error "tiny-rss-get-items: Unable to get buffer %s" filename))))
 
 (defun tiny-rss-output (output-directory categories-info items-list filter)
   "Write the RSS items to .rss files.
+
 Argument OUTPUT-DIRECTORY The path to the directory where the .rss
 files will be generated.
 Argument CATEGORIES-INFO User provided information about categories.
@@ -200,12 +205,14 @@ Argument FILTER User provided filter."
 
 (defun tiny-rss-file-name-from-category (output-directory category)
   "Return the name of the .rss file for a specific CATEGORY.
+
 The name is concatenated with the output directory.
 Argument OUTPUT-DIRECTORY Output directory path."
   (concat output-directory "/feed" category ".rss"))
 
 (defun tiny-rss-create-rss-files (output-directory categories-info items-list filter)
   "Create the rss files from a list of rss items.
+
 Argument OUTPUT-DIRECTORY Path to the directory where the .rss files
 will be generated.
 Argument CATEGORIES-INFO User provided information for categories.
@@ -220,6 +227,7 @@ Argument FILTER User provided filter function."
 
 (defun tiny-rss-files-add-closing-tags (output-directory items-list filter)
   "Close xml tags at the end of the .rss files.
+
 This is called after all the items have been inserted.
 Argument OUTPUT-DIRECTORY Directory where the .rss files are located.
 Argument ITEMS-LIST List of RSS items.
@@ -236,6 +244,7 @@ Argument FILTER Filtering function."
         
 (defun buffer-contains-substring (string)
   "Return t if the current buffer contain a substring.
+
 Argument STRING The substring that will be matched."
   (save-excursion
     (save-match-data
@@ -244,6 +253,7 @@ Argument STRING The substring that will be matched."
 
 (defun tiny-rss-create-rss-file (file category categories-info)
   "Create an .rss FILE with the specified fields.
+
 Argument CATEGORY Category of the feed.
 Argument CATEGORIES-INFO List of category-info."
   (let ((directory (file-name-directory file))
@@ -271,11 +281,13 @@ Argument CATEGORIES-INFO List of category-info."
 
 (defun tiny-rss-add-feed-to-file (title date category author link content file)
   "Append a single item entry in an .rss FILE with the specified fields.
+
 Argument TITLE Title of the RSS item.
 Argument DATE Date of the RSS item.
 Argument CATEGORY Category of the RSS item.
 Argument AUTHOR Author of the RSS item.
-Argument LINK A link, usually displayed at the end of the feed by RSS clients pointing to a web render of the CONTENT."
+Argument LINK A link, usually displayed at the end of the feed by RSS
+clients pointing to a web render of the CONTENT."
   (message (concat "tiny-rss: adding feed to file" file))
   (append-to-file
    (format (concat
@@ -295,6 +307,7 @@ Argument LINK A link, usually displayed at the end of the feed by RSS clients po
 
 (defun tiny-rss-rfc822-check (items-list)
   "Check if dates in items are compatible with rfc822.
+
 Throws an error if a date is not compliant, specifying which date.
 Argument ITEMS-LIST List of items to check."
   (dolist (item-list items-list)
@@ -302,10 +315,11 @@ Argument ITEMS-LIST List of items to check."
       (let* ((timestamp (nth 1 item))
              (this (string-match tiny-rss-rfc822-pattern timestamp)))
         (if (not this)
-            (error "tiny-rss-rfc822-check: " timestamp " is not rfc822"))))))
+            (error "tiny-rss-rfc822-check: %s is not rfc822" timestamp))))))
 
 (defun tiny-rss-rfc822-parse-timestamp (timestamp)
   "Parse a TIMESTAMP like and return a list of the parsed data.
+
 The requrned list has the following structure:
    (DAY-NAME DAY MONTH YEAR HOUR MINUTE SECONDS TIMEZONE)"
   (if (string-match tiny-rss-rfc822-pattern timestamp)
@@ -317,7 +331,7 @@ The requrned list has the following structure:
             (match-string 6 timestamp)  ;; Minute
             (match-string 7 timestamp)  ;; Optional seconds
             (match-string 8 timestamp)) ;; Time zone
-    (error "Error parsing date " timestamp ". does it follow rfc822?")))
+    (error "Error parsing date %s. does it follow rfc822?" timestamp)))
 
 (defun tiny-rss-rfc822-month-to-number (month)
   "Convert a three-letter MONTH abbreviation to a two-digit string."

@@ -1,3 +1,6 @@
+;; Run this elisp file to generate an example feed from the example
+;; org files.
+
 (load "~/projects/tiny-rss/tiny-rss.el")
 
 ;; Test
