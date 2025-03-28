@@ -136,6 +136,9 @@ everything. The simplicity of the program is simply amazing.
 
 The RSS generator works well, however It can be improved in many
 ways. Here are some ideas:
+- better error handling, specifying where the errors happened
+  instead of displaying a generic error
+- add customization options for categories
 - improve the documentation to get ready for MELPA.
 
 ** License
