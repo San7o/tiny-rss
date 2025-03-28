@@ -97,7 +97,6 @@ the convention by specifying =enforce-rfc822 t= in the arguments
 to =tiny-rss-generate=:
 
 #+begin_src emacs-lisp
-  (setq tiny-rss-filter-after-date "20250301")
   (tiny-rss-generate
    :input-directory "~/projects/tiny-rss/examples"
    :output-directory "~/projects/tiny-rss/output"
