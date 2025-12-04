@@ -138,7 +138,7 @@ to =tiny-rss-generate=:
 ** Motivation
 
 I was looking for an RSS feed generator for my org-generated
-online diary https://giovanni-diary.netlify.app/. This website
+online diary https://san7o.github.io/giovanni-diary/. This website
 is not the usual blog, It resembles more a wiki, with many files
 spreaded across multiple directories. Some of those files are
 considered "blog posts", while some others are considered as
